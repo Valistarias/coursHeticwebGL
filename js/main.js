@@ -19,11 +19,11 @@ camera.setTarget(BABYLON.Vector3.Zero());
 camera.attachControl(canvas, true);
 
 // On ajoute une lumière
-// var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-// light.intensity = 0.2;
+var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+light.intensity = 0.2;
 
-// var light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, -1, 0), scene);
-// light2.intensity = 0.2;
+var light2 = new BABYLON.HemisphericLight("light2", new BABYLON.Vector3(0, -1, 0), scene);
+light2.intensity = 0.2;
 
 var mLight = new BABYLON.PointLight("light3", new BABYLON.Vector3(0,3,0), scene)
 mLight.range = 10;
