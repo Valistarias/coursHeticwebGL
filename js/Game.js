@@ -1,38 +1,46 @@
+// Page entièrement chargé, on lance le jeu
 document.addEventListener("DOMContentLoaded", function () {
-	let canvas = document.getElementById('renderCanvas')
-	let game = new Game(canvas)
-	game.createScene()
-});
+    window.game = new Game('renderCanvas');
+}, false);
 
 class Game {
-	constructor(canvas){
-		//On créer le moteur 3D
-		this.canvas = canvas
-		this.engine = new BABYLON.Engine(canvas, true)
-	}
-	createScene(){
-		// On crée notre scène
-		this.scene = new BABYLON.Scene(this.engine)
+    constructor(canvasId){
+        // Canvas et engine défini ici
+        var canvas = document.getElementById(canvasId);
+        var engine = new BABYLON.Engine(canvas, true);
+        var _this = this;
+        
+        // On initie la scène avec une fonction associé à l'objet Game
+        this.scene = this._initScene(engine);
 
-		this.scene.clearColor = new BABYLON.Color3(0,0,0)
+        this.arena = new Arena(this.scene);
 
-		this.user = new User(this)
+        this.user = new User(this.scene,canvas);
 
-		this.arena = new Arena(this)
+        
+        var _Game = this;
+        
+        // Permet au jeu de tourner
+        engine.runRenderLoop(function () {
+            _this.scene.render();
+            // _this.sphere.rotation.addInPlace(new BABYLON.Vector3(0.01,0.01,0.01));
+        });
 
-		// Cette boucle se lance a chaque fois que c'est possible
-		this.engine.runRenderLoop(() => {
-		    this.scene.render()
-		});
+        // Ajuste la vue 3D si la fenetre est agrandi ou diminué
+        window.addEventListener("resize", function () {
+            if (engine) {
+                engine.resize();
+                // _this.sphere.rotation.addInPlace(new BABYLON.Vector3(-0.08,-0.08,-0.08));
+            }
+        },false);
+    }
+    _initScene(engine) {
+        var scene = new BABYLON.Scene(engine);
+        scene.clearColor=new BABYLON.Color3(1,1,1);
+        return scene;
+    }
+};
 
-		// Ajuste la vue 3D si la fenetre est agrandi ou diminué
-	    window.addEventListener("resize", () => {
-	        if (this.engine) {
-	            this.engine.resize()
-	        }
-	    },false);
-	}
-}
 
 // ------------------------- TRANSFO DE DEGRES/RADIANS 
 function degToRad(deg)
