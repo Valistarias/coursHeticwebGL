@@ -11,52 +11,12 @@ class User {
 
     	this._initPointerLock()
 
-    	this.speed = 80
-
     	this.camera.ellipsoid = new BABYLON.Vector3(1, 2, 1)
 
     	this.camera.checkCollisions = true
 
         this.camera.applyGravity = true
-    }
-
-    _checkMove() {
-    	let ratioFps = Math.round(1000/this.scene.getEngine().getDeltaTime())
-        let relativeSpeed = this.speed / ratioFps
-
-        if(this.camera.axisMovement[0]){
-            let forward = new BABYLON.Vector3(
-                parseFloat(Math.sin(parseFloat(this.camera.rotation.y))) * relativeSpeed/1.4, 
-                0, 
-                parseFloat(Math.cos(parseFloat(this.camera.rotation.y))) * relativeSpeed/1.4
-            )
-            this.camera.position = this.camera.position.addInPlace(forward)
-        }
-        if(this.camera.axisMovement[1]){
-            let backward = new BABYLON.Vector3(
-                parseFloat(-Math.sin(parseFloat(this.camera.rotation.y))) * relativeSpeed/1.4, 
-                0, 
-                parseFloat(-Math.cos(parseFloat(this.camera.rotation.y))) * relativeSpeed/1.4
-            )
-            this.camera.position = this.camera.position.addInPlace(backward)
-        }
-        if(this.camera.axisMovement[2]){
-            let left = new BABYLON.Vector3(
-                parseFloat(Math.sin(parseFloat(this.camera.rotation.y) + degToRad(-90))) * relativeSpeed/1.4, 
-                0, 
-                parseFloat(Math.cos(parseFloat(this.camera.rotation.y) + degToRad(-90))) * relativeSpeed/1.4
-            )
-            this.camera.position = this.camera.position.addInPlace(left)
-        }
-        if(this.camera.axisMovement[3]){
-            let right = new BABYLON.Vector3(
-                parseFloat(-Math.sin(parseFloat(this.camera.rotation.y) + degToRad(-90))) * relativeSpeed/1.4, 
-                0, 
-                parseFloat(-Math.cos(parseFloat(this.camera.rotation.y) + degToRad(-90))) * relativeSpeed/1.4
-            )
-            this.camera.position = this.camera.position.addInPlace(right)
-        }
-    }    
+    } 
     _initPointerLock (){
         
         // Requete pour la capture du pointeur
