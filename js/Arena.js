@@ -2,12 +2,10 @@ class Arena {
     constructor(scene) {
 
         // Création de notre lumière principale
-        // this.light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
         this.ambiantColor = new BABYLON.Color3(1,0.95,0.9);
-        // this.ambiantColor = BABYLON.Color3.White()
+        
         // CREATION DES LUMIERES
         
-
         var hemi1 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(0, 1, 0), scene);
         hemi1.diffuse = this.ambiantColor; 
         hemi1.intensity = 0.3;
@@ -39,18 +37,38 @@ class Arena {
         this.groundMaterial.diffuseTexture.vScale = 10;
         this.groundMaterial.maxSimultaneousLights = 20;
 
-        this.beamMaterial = new BABYLON.StandardMaterial("beamTexture", scene);
-        this.beamMaterial.diffuseTexture = new BABYLON.Texture("assets/texturePack/beam_wood.png", scene);
-        this.beamMaterial.diffuseTexture.uScale = 0.3;
-        this.beamMaterial.diffuseTexture.vScale = 0.2;
-        this.beamMaterial.maxSimultaneousLights = 20;
-
         this.paintingTexture = new BABYLON.StandardMaterial("paintingTexture", scene);
         this.paintingTexture.specularColor = new BABYLON.Color3(0.3,0.3,0.3);
         this.paintingTexture.bumpTexture = new BABYLON.Texture("assets/texturePack/wall_brick_normal.jpg", scene);
         this.paintingTexture.maxSimultaneousLights = 20;
 
-        var newRoom = this.NewSalle(scene, false, false)
+        var paintings = document.getElementById('imgMuseum')
+        var paintings = paintings.getElementsByTagName("img");
+
+        var numberRoom = Math.ceil((paintings.length)/2)
+
+        var newRoom = this.NewSalle(scene, true, false)
+
+        for (var i = 0; i < 2; i++) {
+            var paint = this.NewPainting(i,newRoom,paintings[i],scene)
+        };
+
+        for (var i=1;i<numberRoom-1;i++){
+            console.log('New salle !')
+            var newRoom = this.NewSalle(scene, true, true)
+            newRoom.position.z = 60 * i
+            for (var y = 0; y < 2; y++) {
+                let numberPaint = 2*i+y;
+                var paint = this.NewPainting(numberPaint,newRoom,paintings[numberPaint],scene)
+            };
+        }
+
+        var newRoom = this.NewSalle(scene, false, true)
+        newRoom.position.z = 60 * (numberRoom-1)
+
+        for (var i = (numberRoom-1)*2; i < paintings.length; i++) {
+            var paint = this.NewPainting(i,newRoom,paintings[i],scene)
+        };
 
     }
     NewSalle(scene, southGate, northGate){
@@ -79,6 +97,7 @@ class Arena {
         ground.parent = roomCenter;
         ground.checkCollisions = true;
         ground.material = this.groundMaterial;
+        ground.checkCollisions = true;
         roomCenter.light1.includedOnlyMeshes.push(ground);
         roomCenter.light2.includedOnlyMeshes.push(ground);
 
@@ -91,6 +110,7 @@ class Arena {
         wallS.position.y = 15;
         wallS.checkCollisions = true
         wallS.material = this.wallMaterial;
+        wallS.checkCollisions = true;
         roomCenter.light1.includedOnlyMeshes.push(wallS);
         roomCenter.light2.includedOnlyMeshes.push(wallS);
 
@@ -101,6 +121,7 @@ class Arena {
             var wallS2 = wallS.clone('wallS2');
             wallS2.parent = roomCenter;
             wallS2.position.x = -15;
+            wallS2.checkCollisions = true;
             roomCenter.light1.includedOnlyMeshes.push(wallS2);
             roomCenter.light2.includedOnlyMeshes.push(wallS2);
         }
@@ -113,6 +134,7 @@ class Arena {
         wallN.position.y = 15;
         wallN.checkCollisions = true
         wallN.material = this.wallMaterial;
+        wallN.checkCollisions = true;
         roomCenter.light1.includedOnlyMeshes.push(wallN);
         roomCenter.light2.includedOnlyMeshes.push(wallN);
         
@@ -126,6 +148,7 @@ class Arena {
             var wallN2 = wallN.clone('wallN2');
             wallN2.parent = roomCenter;
             wallN2.position.x = -15;
+            wallN2.checkCollisions = true;
             roomCenter.light1.includedOnlyMeshes.push(wallN2);
             roomCenter.light2.includedOnlyMeshes.push(wallN2);
         }
@@ -138,6 +161,7 @@ class Arena {
         wallO.position.y = 15;
         wallO.checkCollisions = true;
         wallO.material = this.wallMaterial;
+        wallO.checkCollisions = true;
         roomCenter.light1.includedOnlyMeshes.push(wallO);
         roomCenter.light2.includedOnlyMeshes.push(wallO);
         
@@ -145,6 +169,7 @@ class Arena {
         wallE.parent = roomCenter;
         wallE.parent = roomCenter;
         wallE.position.x = -25 + 0.5;
+        wallE.checkCollisions = true;
         roomCenter.light1.includedOnlyMeshes.push(wallE);
         roomCenter.light2.includedOnlyMeshes.push(wallE);
 
@@ -159,5 +184,24 @@ class Arena {
         roomCenter.light2.includedOnlyMeshes.push(plafond);
 
         return roomCenter;
+    }
+    NewPainting(id,room,data,scene){
+        let paint = new BABYLON.Mesh.CreateBox("painting",1,scene)
+        paint.parent = room
+        room.light1.includedOnlyMeshes.push(paint)
+        room.light2.includedOnlyMeshes.push(paint)
+        paint.scaling = new BABYLON.Vector3(0.5,data.width/50,data.height/50)
+        
+        if(id%2>0){
+            paint.position.x = (50/2) - 1
+            paint.rotation.x = degToRad(-90)
+        }else{
+            paint.position.x = (-50/2) + 1
+            paint.rotation.x = degToRad(90)
+        }
+        paint.position.y = (paint.scaling.z/2) + 2
+        paint.material = this.paintingTexture.clone("paint"+id)
+        paint.material.diffuseTexture = BABYLON.Texture.CreateFromBase64String(data.src, "paintTexture64-" + id, scene, false, true); 
+
     }
 }

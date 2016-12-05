@@ -1,42 +1,42 @@
 // Page entièrement chargé, on lance le jeu
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded",() => {
     window.game = new Game('renderCanvas');
 }, false);
 
 class Game {
     constructor(canvasId){
         // Canvas et engine défini ici
-        var canvas = document.getElementById(canvasId);
-        var engine = new BABYLON.Engine(canvas, true);
-        var _this = this;
+        var canvas = document.getElementById(canvasId)
+        var engine = new BABYLON.Engine(canvas, true)
         
         // On initie la scène avec une fonction associé à l'objet Game
-        this.scene = this._initScene(engine);
+        this.scene = this._initScene(engine)
 
-        this.arena = new Arena(this.scene);
+        this.arena = new Arena(this.scene)
 
-        this.user = new User(this.scene,canvas);
+        this.user = new User(this.scene,canvas)
 
         
         var _Game = this;
         
         // Permet au jeu de tourner
-        engine.runRenderLoop(function () {
-            _this.scene.render();
-            // _this.sphere.rotation.addInPlace(new BABYLON.Vector3(0.01,0.01,0.01));
+        engine.runRenderLoop(() => {
+            this.scene.render()
+            // this.user._checkMove()
         });
 
         // Ajuste la vue 3D si la fenetre est agrandi ou diminué
-        window.addEventListener("resize", function () {
+        window.addEventListener("resize", () => {
             if (engine) {
-                engine.resize();
-                // _this.sphere.rotation.addInPlace(new BABYLON.Vector3(-0.08,-0.08,-0.08));
+                engine.resize()
             }
         },false);
     }
     _initScene(engine) {
         var scene = new BABYLON.Scene(engine);
-        scene.clearColor=new BABYLON.Color3(1,1,1);
+        scene.clearColor=new BABYLON.Color3(1,1,1)
+        scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
+        scene.collisionsEnabled = true;
         return scene;
     }
 };
