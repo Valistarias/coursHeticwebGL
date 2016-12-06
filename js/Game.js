@@ -33,6 +33,7 @@ class Game {
     }
     _initScene(engine) {
         var scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color3(0,0,0)
         return scene;
     }
 };
